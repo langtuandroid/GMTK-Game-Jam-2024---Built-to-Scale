@@ -1,1 +1,1 @@
-# GMTK-Game-Jam-2024---Built-to-Scale
+# GMTK Game Jam 2024 - Built-to-Scale
