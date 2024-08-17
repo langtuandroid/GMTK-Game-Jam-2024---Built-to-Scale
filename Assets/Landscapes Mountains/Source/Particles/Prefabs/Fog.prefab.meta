@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: d97795440aee1da42879236c0c3562ec
+timeCreated: 1440931576
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 45099
+  packageName: Landscapes Mountains
+  packageVersion: 1.0
+  assetPath: Assets/Landscapes Mountains/Source/Particles/Prefabs/Fog.prefab
+  uploadId: 213661

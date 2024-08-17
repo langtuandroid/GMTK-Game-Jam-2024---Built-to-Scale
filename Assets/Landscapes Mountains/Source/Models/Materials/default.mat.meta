@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 010e75468c17f094fa700993289f7472
+timeCreated: 1445446452
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 45099
+  packageName: Landscapes Mountains
+  packageVersion: 1.0
+  assetPath: Assets/Landscapes Mountains/Source/Models/Materials/default.mat
+  uploadId: 213661

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 372bb7dc74f39004a9a9b1d3f8b5a94c
+timeCreated: 1446553652
+licenseType: Store
+ShaderImporter:
+  defaultTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 45099
+  packageName: Landscapes Mountains
+  packageVersion: 1.0
+  assetPath: Assets/Landscapes Mountains/Shader/Detail_shader.shader
+  uploadId: 213661
