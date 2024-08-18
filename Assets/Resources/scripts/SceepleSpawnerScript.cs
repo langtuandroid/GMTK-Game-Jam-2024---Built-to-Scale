@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using RandomNameGen;
 using UnityEngine;
 using sysRand = System.Random;
@@ -18,6 +19,9 @@ public class SceepleSpawnerScript : MonoBehaviour {
 		public float disposition;
 		public float distanceClimbed;
 		public bool reachedSummit;
+		public bool showHelmet;
+		public bool hasPassedTickedBooth;
+		public Color helmetColour;
 	}
 
 	private GameController gc;
@@ -35,19 +39,7 @@ public class SceepleSpawnerScript : MonoBehaviour {
 		nameGen = new RandomName(rand);
 	}
 
-	// Update is called once per frame
-	void Update() {
-
-	}
-
-	public void TrySpawnSceeple() {
-		Debug.Log(11111);
-		if (sceeples.Count < gc.maxSceeples) {
-		Debug.Log(22222);
-			SpawnSceeple();
-		}
-	}
-
+	//Spawns a sceeple, ignoring any caps and checks
 	private void SpawnSceeple() {
 
 		//Spawn a sceeple, and add it to the sceeple holder
@@ -85,7 +77,82 @@ public class SceepleSpawnerScript : MonoBehaviour {
 		sceeples.Add(sceeple);
 	}
 
-	public void SceeplePassedTicketBooth(SceepleScript sceeple) {
-		
+	//Tries to spawn a sceeple
+	public void TrySpawnSceeple() {
+		if (sceeples.Count < gc.maxSceeples) {
+			SpawnSceeple();
+		}
 	}
+
+
+	public void ChangeSpeed(SceepleScript sceeple, float speed) {
+		sceeple.targetSpeed = speed;
+	}
+
+	public void PayForTicket(SceepleScript sceeple) {
+
+		//Shorthand the stats
+		var stats = sceeple.stats;
+
+		//Remove the ticket price from their walled... YOINK!
+		stats.money -= gc.ticketPrice;
+
+		//Set the stats back
+		sceeple.stats = stats;
+	}
+
+	public void AddHelmet(SceepleScript sceeple) {
+		//Shorthand the stats
+		var stats = sceeple.stats;
+
+		//Remove the ticket price from their walled... YOINK!
+		stats.showHelmet = true;
+
+		//Set the helmet colour
+		//Default gree
+		stats.helmetColour = new Color(0, 255, 0, 1);
+
+		//Set the stats back
+		sceeple.stats = stats;
+	}
+
+	public void SceeplePassedTicketBooth(SceepleScript sceeple, float speed) {
+		PayForTicket(sceeple);
+		AddHelmet(sceeple);
+		sceeple.stats.hasPassedTickedBooth = true;
+		//ChangeSpeed(sceeple, speed);
+	}
+
+	public void DifficultyCheck(SceepleScript sceeple, float speed) {
+		//sceeple.targetSpeed = speed;
+	}
+
+	public async void ReachedSummit(SceepleScript sceeple, float speed) {
+		sceeple.navAgent.enabled = true;
+
+		//Shorthand the stats
+		var stats = sceeple.stats;
+
+		//Remove the ticket price from their walled... YOINK!
+		stats.reachedSummit = true;
+
+		//Set the stats back
+		sceeple.stats = stats;
+
+		//Set the sceeple to wander
+		sceeple.SetWander(true);
+
+		//Wait for a random time between 2 and 5 seconds 
+		UniTask.Delay(Random.Range(2000, 5001));
+
+		//Set the sceeple follow spline to the path down
+		sceeple.splineFollower.spline = gc.pathDown;
+
+		//Set the sceeple to wander
+		sceeple.SetWander(false);
+
+	}
+
+
+
 }

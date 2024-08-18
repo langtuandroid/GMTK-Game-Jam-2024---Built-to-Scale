@@ -14,8 +14,8 @@ public class GameController : MonoBehaviour {
 	public SceepleSpawnerScript sceepleSpawner;
 	public int maxSceeples = 5;
 	public float maxSceepleMoney = 115;
-	public float minSceepleSkillLevel = 1;
-	public float maxSceepleSkillLevel = 5;
+	public float minSceepleSkillLevel = 5;
+	public float maxSceepleSkillLevel = 15;
 	public float minSceepleDisposition = 1;
 	public float maxSceepleDisposition = 1000;
 
@@ -111,7 +111,6 @@ public class GameController : MonoBehaviour {
 
 	//Sets the new state
 	public void SetState(string _state) {
-		Debug.Log(_state);
 		state = _state;
 	}
 

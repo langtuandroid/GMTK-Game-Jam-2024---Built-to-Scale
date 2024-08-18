@@ -1,9 +1,8 @@
-using System;
 using System.Linq;
+using Cinemachine;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using Cinemachine;
 
 namespace StarterAssets
 {
