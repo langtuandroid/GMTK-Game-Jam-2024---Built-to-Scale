@@ -15,8 +15,8 @@ public class FlyCamera : MonoBehaviour {
 			return Cursor.lockState == CursorLockMode.Locked;
 		}
 		set {
-			Cursor.lockState = value ? CursorLockMode.Locked : CursorLockMode.None;
-			Cursor.visible = value == false;
+			//Cursor.lockState = value ? CursorLockMode.Locked : CursorLockMode.None;
+			//Cursor.visible = value == false;
 		}
 	}
 

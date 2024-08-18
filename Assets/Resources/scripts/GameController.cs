@@ -2,16 +2,22 @@ using Cinemachine;
 using UnityEngine;
 using Dreamteck.Splines;
 public class GameController : MonoBehaviour {
+
 	[Header("State stuff")]
 	public string state;
 	private string lastState;
-
+	public float ticketPrice = 1;
+	public bool mouseLockState = true;
 
 
 	[Header("Sceeple stuff")]
-	public int maxSceeples = 5;
 	public SceepleSpawnerScript sceepleSpawner;
-
+	public int maxSceeples = 5;
+	public float maxSceepleMoney = 115;
+	public float minSceepleSkillLevel = 1;
+	public float maxSceepleSkillLevel = 5;
+	public float minSceepleDisposition = 1;
+	public float maxSceepleDisposition = 1000;
 
 
 	[Header("UI stuff")]
@@ -20,15 +26,15 @@ public class GameController : MonoBehaviour {
 	public GameObject uiControls;
 
 
+	[Header("Park stuff")]
+	public SplineComputer pathUp;
+	public SplineComputer pathDown;
+	public int funds;
 
 
 	[Header("Player stuff")]
 	public Transform player;
-	public SplineFollower playerFollower;
-	public SplinePositioner playerPositioner;
 	public CinemachineVirtualCamera virtualCamera;
-	public float playerSpeed = 1;
-
 
 
 
@@ -45,6 +51,9 @@ public class GameController : MonoBehaviour {
 		}
 
 		StateEachFrame();
+
+		//Set the mouse lock state
+		SetMouseLock(mouseLockState);
 
 	}
 
@@ -87,13 +96,8 @@ public class GameController : MonoBehaviour {
 				break;
 
 			case "build":
-
-				var movement = Input.GetAxis("Vertical");
-
-				if (movement != 0) {
-
-
-
+				if (Input.GetKeyDown(KeyCode.P)) {
+					ToggleMouseLock();
 				}
 
 				break;
@@ -145,5 +149,18 @@ public class GameController : MonoBehaviour {
 
 		//Hide the play mode indicator
 		uiPlayModeIndicator.SetActive(false);
+	}
+
+	//Sets the new state
+	public void SetMouseLock(bool lockState) {
+		Cursor.lockState = lockState ? CursorLockMode.Locked : CursorLockMode.Confined;
+		Cursor.visible = !lockState;
+	}
+
+	//Sets the new state
+	public void ToggleMouseLock() {
+
+		mouseLockState = !mouseLockState;
+		SetMouseLock(mouseLockState);
 	}
 }
