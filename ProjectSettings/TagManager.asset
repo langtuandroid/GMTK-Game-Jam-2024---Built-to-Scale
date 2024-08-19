@@ -7,6 +7,7 @@ TagManager:
   - CinemachineTarget
   - Trigger
   - Sceeple
+  - Spawner
   layers:
   - Default
   - TransparentFX
@@ -19,7 +20,7 @@ TagManager:
   - sceeple
   - trigger
   - navmesh
-  - 
+  - spawner
   - 
   - 
   - 
