@@ -1,12 +1,20 @@
 using Cinemachine;
 using UnityEngine;
 using Dreamteck.Splines;
+using TMPro;
 public class GameController : MonoBehaviour {
+
+
+	[Header("Park stuff")]
+	public SplineComputer pathUp;
+	public SplineComputer pathDown;
+	public int ticketPrice = 12;
+	public int funds;
+	[HideInInspector] public int todaysVisitorCount;
 
 	[Header("State stuff")]
 	public string state;
 	private string lastState;
-	public float ticketPrice = 1;
 	public bool mouseLockState = true;
 
 
@@ -24,12 +32,8 @@ public class GameController : MonoBehaviour {
 	public GameObject uiBuildModeIndicator;
 	public GameObject uiPlayModeIndicator;
 	public GameObject uiControls;
-
-
-	[Header("Park stuff")]
-	public SplineComputer pathUp;
-	public SplineComputer pathDown;
-	public int funds;
+	public TextMeshProUGUI uiFundsIndicator;
+	public TextMeshProUGUI uiTodaysVisitorCount;
 
 
 	[Header("Player stuff")]
@@ -54,6 +58,8 @@ public class GameController : MonoBehaviour {
 
 		//Set the mouse lock state
 		SetMouseLock(mouseLockState);
+
+		UpdateUITextValues();
 
 	}
 
@@ -114,6 +120,7 @@ public class GameController : MonoBehaviour {
 		state = _state;
 	}
 
+
 	//Sets the new state
 	public void ResetUI() {
 
@@ -126,6 +133,7 @@ public class GameController : MonoBehaviour {
 		//Hide the controls indicator
 		uiControls.SetActive(false);
 	}
+
 
 	//Sets the new state
 	public void ShowBuildModeUI() {
@@ -140,6 +148,7 @@ public class GameController : MonoBehaviour {
 		uiControls.SetActive(true);
 	}
 
+
 	//Sets the new state
 	public void ShowPlayModeUI() {
 
@@ -150,16 +159,28 @@ public class GameController : MonoBehaviour {
 		uiPlayModeIndicator.SetActive(false);
 	}
 
+
 	//Sets the new state
 	public void SetMouseLock(bool lockState) {
 		Cursor.lockState = lockState ? CursorLockMode.Locked : CursorLockMode.Confined;
 		Cursor.visible = !lockState;
 	}
 
+
 	//Sets the new state
 	public void ToggleMouseLock() {
 
 		mouseLockState = !mouseLockState;
 		SetMouseLock(mouseLockState);
+	}
+
+	private void UpdateUITextValues() {
+
+		//Update the funds indicator
+		uiFundsIndicator.text = $"Funds: ${funds}";
+
+		//Update the funds indicator
+		uiTodaysVisitorCount.text = $"Visitors: {todaysVisitorCount}";
+
 	}
 }

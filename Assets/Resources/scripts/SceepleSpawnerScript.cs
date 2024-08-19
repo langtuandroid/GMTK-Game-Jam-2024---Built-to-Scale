@@ -9,6 +9,7 @@ public class SceepleSpawnerScript : MonoBehaviour {
 	public List<SceepleScript> sceeples;
 	public GameObject sceeplePrefab;
 	public Transform[] spawnPoints;
+	public Gradient helmetColours;
 
 	private sysRand rand;
 	private RandomName nameGen;
@@ -21,8 +22,11 @@ public class SceepleSpawnerScript : MonoBehaviour {
 		public float distanceClimbed;
 		public bool reachedSummit;
 		public bool showHelmet;
+		public bool showShirt;
+		public bool showHat;
 		public bool hasPassedTickedBooth;
-		public Color helmetColour;
+		public Color shirtColour;
+		public Color hatColour;
 	}
 
 	private GameController gc;
@@ -41,15 +45,15 @@ public class SceepleSpawnerScript : MonoBehaviour {
 	}
 
 	//Spawns a sceeple, ignoring any caps and checks
-	private void SpawnSceeple() {
+	private void SpawnSceeple(Transform spawnPoint) {
 
 		//Spawn a sceeple, and add it to the sceeple holder
 		var sceeple = Instantiate(sceeplePrefab, transform).GetComponent<SceepleScript>();
 
-		//Move it to the start point inside the sceeple holder
-		sceeple.transform.localPosition = Vector3.zero;
+		//Move it to the given spawn point
+		sceeple.transform.position = spawnPoint.position;
 
-		//Set the unique sceeple stats
+		//Create the sceeple's stats
 		sceeple.stats = new Sceeple {
 
 			//Create a sceeple name
@@ -69,14 +73,23 @@ public class SceepleSpawnerScript : MonoBehaviour {
 
 			//Did they reach the summit of the mountain
 			reachedSummit = false,
+
+			//Set the default shirt colour
+			shirtColour = new Color(255, 255, 255, 255),
+
+			//Set the default hat colour
+			hatColour = new Color(255, 255, 255, 255),
+
 		};
 
 		//Assign the path up to the sceeple spline follower
 		sceeple.splineFollower.spline = gc.pathUp;
 
-		var point = sceeple.splineFollower.spline.GetPoint(0).position;
-		
-		
+		sceeple.splineFollower.motion.offset = new Vector2(Random.Range(-2.6f, 2.6f), 0);
+
+		//toggle the nav agent off
+		sceeple.navAgent.enabled = false;
+
 		//Add the sceeple to the list
 		sceeples.Add(sceeple);
 	}
@@ -84,7 +97,7 @@ public class SceepleSpawnerScript : MonoBehaviour {
 	//Tries to spawn a sceeple
 	public void TrySpawnSceeple() {
 		if (sceeples.Count < gc.maxSceeples) {
-			SpawnSceeple();
+			SpawnSceeple(spawnPoints[Random.Range(0, spawnPoints.Length)]);
 		}
 	}
 
@@ -98,8 +111,11 @@ public class SceepleSpawnerScript : MonoBehaviour {
 		//Shorthand the stats
 		var stats = sceeple.stats;
 
-		//Remove the ticket price from their walled... YOINK!
+		//Remove the ticket price from their wallet... YOINK!
 		stats.money -= gc.ticketPrice;
+
+		//Add that yoinked cash to your own wallet
+		gc.funds += gc.ticketPrice;
 
 		//Set the stats back
 		sceeple.stats = stats;
@@ -112,10 +128,6 @@ public class SceepleSpawnerScript : MonoBehaviour {
 		//Remove the ticket price from their walled... YOINK!
 		stats.showHelmet = true;
 
-		//Set the helmet colour
-		//Default gree
-		stats.helmetColour = new Color(0, 255, 0, 1);
-
 		//Set the stats back
 		sceeple.stats = stats;
 	}
@@ -123,12 +135,37 @@ public class SceepleSpawnerScript : MonoBehaviour {
 	public void SceeplePassedTicketBooth(SceepleScript sceeple, float speed) {
 		PayForTicket(sceeple);
 		AddHelmet(sceeple);
-		sceeple.stats.hasPassedTickedBooth = true;
-		//ChangeSpeed(sceeple, speed);
+
+		//Shorthand the stats
+		var stats = sceeple.stats;
+
+		//Set that they've passed the ticketbooth
+		stats.hasPassedTickedBooth = true;
+
+		//Set the stats back
+		sceeple.stats = stats;
+
+		//Chalk another visitor on the board
+		gc.todaysVisitorCount++;
+
 	}
 
 	public void DifficultyCheck(SceepleScript sceeple, float speed) {
-		//sceeple.targetSpeed = speed;
+
+		 
+		//If the target speed is less than 6
+		if (sceeple.targetSpeed < 6) {
+			
+			//"Roll" a dice if it's above 70 (aka 30%) 
+			if (Random.Range(1, 101) > (70 * sceeple.angle)) {
+				sceeple.TurnBack();
+			}
+		}
+		
+		//If the target speed is greater than 6, but less than 8; above 8 just never fails the check
+		else if (sceeple.targetSpeed < 8) {
+			
+		}
 	}
 
 	public async void ReachedSummit(SceepleScript sceeple, float speed) {
