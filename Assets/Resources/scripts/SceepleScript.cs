@@ -28,50 +28,56 @@ public class SceepleScript : MonoBehaviour {
 
 	private void Update() {
 
-		//If not wandering, calculate the spline follower speeds
-		if (!wander) {
+        //Has this sceeple passed the ticket booth?
+		if (stats.hasPassedTickedBooth) {
+
+			//If not wandering, calculate the spline follower speeds
+			if (!wander) {
 
 
-			//Have they passed the ticket booth? 
-			if (stats.hasPassedTickedBooth) {
+				//Have they passed the ticket booth? 
+				if (stats.hasPassedTickedBooth) {
 
-				//Update the angle calc
-				UpdateAngle();
+					//Update the angle calc
+					UpdateAngle();
 
-				//Get the programatic target speed
-				targetSpeed = stats.skillLevel * angle;
+					//Get the programatic target speed
+					targetSpeed = stats.skillLevel * angle;
+				}
+
+				//Haven't passed the ticket booth yet, so set fixed speed
+				else {
+					targetSpeed = 2;
+				}
+
+				//Debug.Log(stats.skillLevel * angle);
+
+				//Calculate the speed change variable
+				var speedChange = Time.deltaTime * 5;
+
+				//If the target speed is greater than the speed
+				if (targetSpeed > splineFollower.followSpeed) {
+
+					//Set the spline speed
+					splineFollower.followSpeed = Mathf.Clamp(splineFollower.followSpeed + speedChange, splineFollower.followSpeed, targetSpeed);
+				}
+
+				//If the target speed is less than
+				else if (targetSpeed < splineFollower.followSpeed) {
+
+					//Set the spline speed
+					splineFollower.followSpeed = Mathf.Clamp(splineFollower.followSpeed - speedChange, targetSpeed, splineFollower.followSpeed);
+				}
+				//Debug.Log(splineFollower.followSpeed);
 			}
-			
-			//Haven't passed the ticket booth yet, so set fixed speed
+
+			//If wander is true
 			else {
-				targetSpeed = 2;
+				//TODO: write the wander code
 			}
-
-			//Debug.Log(stats.skillLevel * angle);
-
-			//Calculate the speed change variable
-			var speedChange = Time.deltaTime * 5;
-
-			//If the target speed is greater than the speed
-			if (targetSpeed > splineFollower.followSpeed) {
-
-				//Set the spline speed
-				splineFollower.followSpeed = Mathf.Clamp(splineFollower.followSpeed + speedChange, splineFollower.followSpeed, targetSpeed);
-			}
-
-			//If the target speed is less than
-			else if (targetSpeed < splineFollower.followSpeed) {
-
-				//Set the spline speed
-				splineFollower.followSpeed = Mathf.Clamp(splineFollower.followSpeed - speedChange, targetSpeed, splineFollower.followSpeed);
-			}
-			//Debug.Log(splineFollower.followSpeed);
 		}
-
-		//If wander is true
-		else {
-			//TODO: write the wander code
-		}
+		
+		//Hasn't passed the ticket booth yet, 
 
 	}
 

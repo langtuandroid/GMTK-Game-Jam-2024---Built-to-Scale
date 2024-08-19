@@ -8,6 +8,7 @@ public class SceepleSpawnerScript : MonoBehaviour {
 
 	public List<SceepleScript> sceeples;
 	public GameObject sceeplePrefab;
+	public Transform[] spawnPoints;
 
 	private sysRand rand;
 	private RandomName nameGen;
@@ -73,6 +74,9 @@ public class SceepleSpawnerScript : MonoBehaviour {
 		//Assign the path up to the sceeple spline follower
 		sceeple.splineFollower.spline = gc.pathUp;
 
+		var point = sceeple.splineFollower.spline.GetPoint(0).position;
+		
+		
 		//Add the sceeple to the list
 		sceeples.Add(sceeple);
 	}
