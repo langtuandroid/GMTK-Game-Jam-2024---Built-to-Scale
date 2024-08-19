@@ -216,7 +216,7 @@ public class SceepleSpawnerScript : MonoBehaviour {
 
 			Debug.Log($"{sceeple.stats.name} made it to the summit");
 
-			//Remove the ticket price from their walled... YOINK!
+			//Remove the ticket price from their wallet... YOINK!
 			sceeple.reachedSummit = true;
 
 			//Set the sceeple to wander
@@ -240,12 +240,10 @@ public class SceepleSpawnerScript : MonoBehaviour {
 			Debug.Log($"{sceeple.stats.name} is heading back down after a successful climb");
 
 			//Walk back to the spline
-			sceeple.navAgent.SetDestination(sceeple.splineFollower.spline.GetPoint(sceeple.splineFollower.spline.pointCount).position);
+			sceeple.navAgent.SetDestination(sceeple.splineFollower.spline.GetPoint(sceeple.splineFollower.spline.pointCount - 1).position);
+			
 			await sceeple.AwaitDestinationReached();
 
-			//Make them move faster
-			sceeple.navAgent.speed = 5;
-				
 			//Wait for a random time between 2 and 5 seconds 
 			await UniTask.Delay(1500);
 
@@ -264,6 +262,10 @@ public class SceepleSpawnerScript : MonoBehaviour {
 
 	public async void SceepleLeavingMountain(SceepleScript sceeple, float speed) {
 
+		//Make them move faster
+		sceeple.navAgent.speed = 7;
+		
+			
 		//If the sceeple either reached the summit, or turned back
 		if (sceeple.reachedSummit || sceeple.turnedBack) {
 

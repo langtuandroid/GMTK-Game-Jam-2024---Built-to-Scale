@@ -34,7 +34,7 @@ public class GameController : MonoBehaviour {
 	[Header("UI stuff")]
 	public GameObject uiBuildModeIndicator;
 	public GameObject uiPlayModeIndicator;
-	public GameObject uiControls;
+	//public GameObject uiControls;
 	public TextMeshProUGUI uiFundsIndicator;
 	public TextMeshProUGUI uiTodaysVisitorCount;
 
@@ -149,7 +149,7 @@ public class GameController : MonoBehaviour {
 		uiPlayModeIndicator.SetActive(false);
 
 		//Hide the controls indicator
-		uiControls.SetActive(false);
+		//uiControls.SetActive(false);
 	}
 
 
@@ -163,7 +163,7 @@ public class GameController : MonoBehaviour {
 		uiBuildModeIndicator.SetActive(true);
 
 		//Hide the controls indicator
-		uiControls.SetActive(true);
+		//uiControls.SetActive(true);
 	}
 
 
