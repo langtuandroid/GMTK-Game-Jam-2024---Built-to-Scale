@@ -1,3 +1,4 @@
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Dreamteck.Splines;
 using UnityEngine;
@@ -11,7 +12,15 @@ public class SceepleScript : MonoBehaviour {
 	public float targetSpeed = 2;
 	private bool wander;
 	private bool hasClimbed;
-	private bool turnedBack;
+	public bool turnedBack;
+	public float distanceClimbed;
+	public bool reachedSummit;
+	public bool showHelmet;
+	public bool showShirt;
+	public bool showHat;
+	public bool showPlushie;
+	public bool hasPassedTickedBooth;
+	public Spline.Direction splineDirection = Spline.Direction.Forward;
 	public float angle;
 	private Vector3 lastPos;
 
@@ -19,6 +28,7 @@ public class SceepleScript : MonoBehaviour {
 	public GameObject helmet;
 	public GameObject hat;
 	public GameObject shirt;
+	public GameObject plushie;
 
 	private GameController gc;
 
@@ -29,124 +39,95 @@ public class SceepleScript : MonoBehaviour {
 		//Shorthand the game controller
 		gc = FindFirstObjectByType<GameController>();
 
+		//Set the Helmet's visibility (always off if the hat is visible)
+		helmet.SetActive(!showHat && showHelmet);
 
+		//Set the Hat's visibility
+		hat.SetActive(showHat);
 
-		helmet.SetActive(stats.showHelmet);
-		hat.SetActive(stats.showHat);
-		shirt.SetActive(stats.showShirt);
+		//Set the Shirt's visibility
+		shirt.SetActive(showShirt);
 
 		//Set the helment colour based on the sceeples skill
 		helmet.GetComponentInChildren<MeshRenderer>().material.SetColor("_BaseColor", gc.sceepleSpawner.helmetColours.Evaluate((stats.skillLevel - gc.minSceepleSkillLevel) / (gc.maxSceepleSkillLevel - gc.minSceepleSkillLevel)));
 
-		Debug.Log((stats.skillLevel - gc.minSceepleSkillLevel) / (gc.maxSceepleSkillLevel - gc.minSceepleSkillLevel));
-
-		await UniTask.Delay(100);
+		//Wait a tick to let things settle
+		await UniTask.Delay(16);
 
 		//toggle the nav agent on
 		navAgent.enabled = true;
+
+		//Set the path as the first point on the spline
+		navAgent.SetDestination(splineFollower.spline.GetPoint(0).position);
+
+		//Wait for the sceeple to reach the start of the spline
+		await AwaitDestinationReached();
+
+
+		//Clear the nav agent path data
+		navAgent.ResetPath();
+
+		//Disable the nav agent
+		navAgent.enabled = false;
+
+		//Make them follow the spline
+		splineFollower.follow = true;
+
+		//Enable the spline follower
+		splineFollower.enabled = true;
+
+		//Mark that they've climbed
+		hasClimbed = true;
 	}
 
-	private void Update() {
+	private async void Update() {
 
 
 		//Sync the helmet state 
-		helmet.SetActive(stats.showHelmet);
+		helmet.SetActive(!showHat && showHelmet);
 
 		//Sync the hat state 
-		hat.SetActive(stats.showHat);
+		hat.SetActive(showHat);
 
 		//Sync the shirt state 
-		shirt.SetActive(stats.showShirt);
+		shirt.SetActive(showShirt);
 
+		//Sync the shirt state 
+		plushie.SetActive(showPlushie);
 
-		//Has this sceeple passed the ticket booth?
-		if (stats.hasPassedTickedBooth) {
+		//Try to force the spline direction
+		splineFollower.direction = splineDirection;
 
-			//If not wandering, calculate the spline follower speeds
-			if (!wander) {
+		//Update the angle calc
+		UpdateAngle();
 
+		//Get the programatic target speed
+		targetSpeed = stats.skillLevel * angle;
 
-				//If they haven't climbed
-				if (!hasClimbed) {
-
-					//Make them face the travel direction
-					FaceTravelDirection();
-
-					//And the agent is active
-					if (navAgent.enabled) {
-
-						//No agent paths pending 
-						if (!navAgent.pathPending) {
-
-							//Agent distance to target <= stopping distance + buffer
-							if (navAgent.remainingDistance <= (navAgent.stoppingDistance)) {
-
-								//Clear the nav agent path data
-								navAgent.ResetPath();
-
-								//Disable the nav agent
-								navAgent.enabled = false;
-
-								//Make them follow the spline
-								splineFollower.follow = true;
-
-								//Enable the spline follower
-								splineFollower.enabled = true;
-
-								//Mark that they've climbed
-								hasClimbed = true;
-							}
-						}
-					}
-				}
-
-				else {
-
-					//Update the angle calc
-					UpdateAngle();
-
-					//Get the programatic target speed
-					targetSpeed = stats.skillLevel * angle;
-				}
-
-				//Calculate the speed change variable
-				var speedChange = Time.deltaTime * 5;
-
-				//If the target speed is greater than the speed
-				if (targetSpeed > splineFollower.followSpeed) {
-
-					//Set the spline speed
-					splineFollower.followSpeed = Mathf.Clamp(splineFollower.followSpeed + speedChange, splineFollower.followSpeed, targetSpeed);
-				}
-
-				//If the target speed is less than
-				else if (targetSpeed < splineFollower.followSpeed) {
-
-					//Set the spline speed
-					splineFollower.followSpeed = Mathf.Clamp(splineFollower.followSpeed - speedChange, targetSpeed, splineFollower.followSpeed);
-				}
-			}
-
-			//If wander is true
-			else {
-
-				//Make the face the travel direction
-				FaceTravelDirection();
-
-				//TODO: write the wander code
-			}
+		if (splineDirection == Spline.Direction.Backward) {
+			targetSpeed = -targetSpeed;
 		}
 
-		//Hasn't passed the ticket booth yet,
-		else {
+		//Calculate the speed change variable
+		var speedChange = Time.deltaTime * 5;
 
-			//Is the nav agent enabled, and are they missing a path?
-			if (navAgent.enabled && !navAgent.hasPath) {
+		//If the target speed is greater than the speed
+		if (targetSpeed > splineFollower.followSpeed) {
 
-				//Se the path as the first point on the spline
-				navAgent.SetDestination(splineFollower.spline.GetPoint(0).position);
-			}
+			//Set the spline speed
+			splineFollower.followSpeed = Mathf.Clamp(splineFollower.followSpeed + speedChange, splineFollower.followSpeed, targetSpeed);
 		}
+
+		//If the target speed is less than
+		else if (targetSpeed < splineFollower.followSpeed) {
+
+			//Set the spline speed
+			splineFollower.followSpeed = Mathf.Clamp(splineFollower.followSpeed - speedChange, targetSpeed, splineFollower.followSpeed);
+		}
+
+
+		//Make them face the travel direction
+		FaceTravelDirection();
 
 	}
 
@@ -172,7 +153,7 @@ public class SceepleScript : MonoBehaviour {
 
 	}
 
-	public void SetWander(bool state) {
+	public async UniTask SetWander(bool state) {
 
 		//Set the wander variable
 		wander = state;
@@ -183,11 +164,26 @@ public class SceepleScript : MonoBehaviour {
 		//Set the spline follower enable to the inverse
 		splineFollower.enabled = !state;
 
-	}
+		//Turn on the navagent
+		navAgent.enabled = state;
 
+	}
 
 	private void SetWanderPoint() {
 		navAgent.SetDestination(GetRandomPoint(transform.position, 10));
+	}
+
+	public async UniTask AwaitDestinationReached() {
+
+		// Wait until the agent has a path, destination, and is not pending or null.
+		while ((!navAgent.hasPath || navAgent.pathPending || navAgent.pathStatus != NavMeshPathStatus.PathComplete) && navAgent.remainingDistance < navAgent.stoppingDistance) {
+			await UniTask.Yield(PlayerLoopTiming.Update);
+		}
+
+		// Wait until the agent reaches the destination or is close enough.
+		while (navAgent.remainingDistance > navAgent.stoppingDistance) {
+			await UniTask.Yield(PlayerLoopTiming.Update);
+		}
 	}
 
 	private void UpdateAngle() {
@@ -205,8 +201,14 @@ public class SceepleScript : MonoBehaviour {
 	}
 
 	public void TurnBack() {
+
+		Debug.Log($"{stats.name} turned back");
+
+		//Set the turned back flag
 		turnedBack = true;
-		splineFollower.direction = Spline.Direction.Backward;
+
+		//Reverse the spline direction
+		splineDirection = Spline.Direction.Backward;
 	}
 
 }
