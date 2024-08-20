@@ -84,7 +84,7 @@ public class SceneManagerScript : MonoBehaviour {
 		}
 	}
 
-	private void ResetUI() {
+	public void ResetUI() {
 
 		cameraSpeed = cameraSpeedSlider.slider.value;
 		cameraSensitivity = cameraSensitivitySlider.slider.value;
@@ -94,8 +94,13 @@ public class SceneManagerScript : MonoBehaviour {
 		uiOptions.SetActive(false);
 		uiHighScores.SetActive(false);
 		uiEndOfDayReport.SetActive(false);
-		uiPurchaseMenu.SetActive(false);
-		uiUpgradeMenu.SetActive(false);
+		if (uiPurchaseMenu is not null) {
+			uiPurchaseMenu.SetActive(false);
+		}
+		
+		if (uiUpgradeMenu is not null && uiUpgradeMenu.activeInHierarchy) {
+			uiUpgradeMenu.SetActive(false);
+		}
 	}
 
 	public async UniTask FadeScreenIn() {
@@ -212,6 +217,15 @@ public class SceneManagerScript : MonoBehaviour {
 
 		//Show the options screen
 		uiPurchaseMenu.SetActive(true);
+        
+		if (gc is not null) {
+
+			//Save the last gameplay state
+			savedGameControllerState = gc.state;
+
+			//Show the how tom play screen
+			gc.SetState("paused");
+		}
 	}
 
 	public void ShowUpgradeMenu() {
@@ -220,6 +234,15 @@ public class SceneManagerScript : MonoBehaviour {
 
 		//Show the options screen
 		uiUpgradeMenu.SetActive(true);
+        
+		if (gc is not null) {
+
+			//Save the last gameplay state
+			savedGameControllerState = gc.state;
+
+			//Show the how tom play screen
+			gc.SetState("paused");
+		}
 	}
 
 	public void PausePlaying() {

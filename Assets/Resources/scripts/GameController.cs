@@ -54,6 +54,8 @@ public class GameController : MonoBehaviour {
 	public TextMeshProUGUI uiCurrentDayIndicator;
 	public AudioSource sfxOnShot;
 	public AudioClip sfxInGameMenu;
+	public GameObject uiUpgradeMenu;
+	public GameObject uiPurchaseMenu;
 
 
 	[Header("Player stuff")]
@@ -67,6 +69,11 @@ public class GameController : MonoBehaviour {
 		//Shorthand the game controller
 		sm = FindFirstObjectByType<SceneManagerScript>();
 
+		sm.uiUpgradeMenu = uiUpgradeMenu;
+		sm.uiPurchaseMenu = uiPurchaseMenu;
+
+		sm.ResetUI();
+
 		//Stare the game on the initialise state
 		SetState("initialise");
 	}
@@ -75,9 +82,12 @@ public class GameController : MonoBehaviour {
 	private void Update() {
 		debug = Input.GetKey(KeyCode.F);
 
-		//Set the camera settings
-		camera.acceleration = sm.cameraSpeed;
-		camera.lookSensitivity = sm.cameraSensitivity;
+		if (sm is not null) {
+
+			//Set the camera settings
+			camera.acceleration = sm.cameraSpeed;
+			camera.lookSensitivity = sm.cameraSensitivity;
+		}
 
 
 		//If the state has changed
@@ -178,7 +188,9 @@ public class GameController : MonoBehaviour {
 				}
 
 				if (Input.GetKeyDown(KeyCode.U)) {
+					//if () {
 					sm.ShowUpgradeMenu();
+					//}
 				}
 
 
@@ -279,7 +291,21 @@ public class GameController : MonoBehaviour {
 
 		//Update the funds indicator
 		uiTodaysVisitorCount.text = $"{todaysVisitorCount}";
+	}
 
+	public void TryBuyUpgrade(UpgradeItemScript upgrade) {
+		if (upgrade) {
+			if (upgrade.price <= funds) {
+				funds -= upgrade.price;
+				upgrade.purchased = true;
+				Destroy(upgrade.eventTrigger.gameObject);
+			}
+		}
+	}
+
+
+	public void ResumePlaying() {
+		sm.ResumePlaying();
 	}
 
 }

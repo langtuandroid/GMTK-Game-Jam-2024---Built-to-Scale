@@ -65,10 +65,10 @@ public class SceepleSpawnerScript : MonoBehaviour {
 			disposition = Random.Range(gc.minSceepleDisposition, gc.maxSceepleDisposition),
 
 			//Set the default shirt colour
-			shirtColour = new Color(255, 255, 255, 255),
+			shirtColour = new Color(1, 1, 1, 1),
 
 			//Set the default hat colour
-			hatColour = new Color(255, 255, 255, 255),
+			hatColour = new Color(1, 1, 1, 1),
 
 		};
 
