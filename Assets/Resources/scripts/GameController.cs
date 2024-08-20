@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
@@ -6,9 +7,9 @@ using TMPro;
 public class GameController : MonoBehaviour {
 	[Header("DEBUG")]
 	public bool debug;
-	
-	
-	
+
+
+
 	[Header("Park stuff")]
 	public SplineComputer pathUp;
 	public SplineComputer pathDown;
@@ -56,7 +57,6 @@ public class GameController : MonoBehaviour {
 
 
 	[Header("Player stuff")]
-	public Transform player;
 	public FlyCamera camera;
 
 	private SceneManagerScript sm;
@@ -73,12 +73,13 @@ public class GameController : MonoBehaviour {
 
 	// Update is called once per frame
 	private void Update() {
+			debug = Input.GetKey(KeyCode.F);
 
 		//Set the camera settings
 		camera.acceleration = sm.cameraSpeed;
 		camera.lookSensitivity = sm.cameraSensitivity;
 
-	
+
 		//If the state has changed
 		if (state != lastState) {
 
@@ -130,14 +131,14 @@ public class GameController : MonoBehaviour {
 				break;
 
 			case "build":
-                
+
 				if (day == totalDays) {
 					uiCurrentDayIndicator.text = $"{day}/{totalDays}";
 				}
 				else {
 					uiCurrentDayIndicator.text = $"{day}/{totalDays}";
 				}
-				
+
 				//Show the build ui
 				ShowBuildModeUI();
 
@@ -226,6 +227,12 @@ public class GameController : MonoBehaviour {
 
 		//Hide the controls indicator
 		//uiControls.SetActive(false);
+
+		//Hide play mode ui
+		uiPlayMode.SetActive(false);
+
+		//Hide build mode ui
+		uiBuildMode.SetActive(false);
 	}
 
 

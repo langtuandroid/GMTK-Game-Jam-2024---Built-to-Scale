@@ -82,7 +82,7 @@ public class SceepleScript : MonoBehaviour {
 		hasClimbed = true;
 	}
 
-	private async void Update() {
+	private void Update() {
 
 		//Sync the helmet state 
 		helmet.SetActive(!showHat && showHelmet);
@@ -109,12 +109,13 @@ public class SceepleScript : MonoBehaviour {
 			targetSpeed = -6;
 		}
 
-		if (gc.debug) {
-			targetSpeed = targetSpeed * 10;
-		}
-
 		//Calculate the speed change variable
 		var speedChange = Time.deltaTime * 5;
+
+		if (gc.debug) {
+			targetSpeed = targetSpeed * 20;
+			speedChange = speedChange * 5;
+		}
 
 		//If the target speed is greater than the speed
 		if (targetSpeed > splineFollower.followSpeed) {

@@ -142,14 +142,20 @@ public class SceepleSpawnerScript : MonoBehaviour {
 		sceeple.showHelmet = true;
 	}
 
+	public void RemoveHelmet(SceepleScript sceeple) {
+
+		//Set the helmet to shown
+		sceeple.showHelmet = false;
+	}
+
 	public void AddHat(SceepleScript sceeple) {
-		sceeple.showHelmet = true;
+		sceeple.showHat = true;
 	}
 
 	public void AddShirt(SceepleScript sceeple) {
 
 		//Set the shirt to be shown
-		sceeple.showHelmet = true;
+		sceeple.showShirt = true;
 	}
 
 	public void AddPlushie(SceepleScript sceeple) {
@@ -302,7 +308,7 @@ public class SceepleSpawnerScript : MonoBehaviour {
 
 			var rating = CalculateRating(sceeple);
 			Debug.Log($"{sceeple.stats.name} gave rating: {rating} - Disp.:{sceeple.stats.disposition} - distance.:{sceeple.distanceClimbed}");
-			
+
 			gc.dayRatingRaw += rating;
 
 
@@ -362,9 +368,9 @@ public class SceepleSpawnerScript : MonoBehaviour {
 
 	public void CheckGiftShopPurchase(SceepleScript sceeple, float speed) {
 
-		//Get the disposition as a percentage
-		var dispositionPercentage = (sceeple.stats.disposition - gc.minSceepleDisposition) / (gc.maxSceepleDisposition - gc.minSceepleDisposition) * 100;
 
+		//Take the helmet off
+		RemoveHelmet(sceeple);
 
 		Debug.Log($"{sceeple.stats.name} rating: {sceeple.rating}, has ${sceeple.stats.money}");
 
