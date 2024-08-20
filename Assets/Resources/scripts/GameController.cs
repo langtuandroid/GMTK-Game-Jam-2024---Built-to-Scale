@@ -43,24 +43,32 @@ public class GameController : MonoBehaviour {
 	public Transform player;
 	public CinemachineVirtualCamera virtualCamera;
 
-
+	private SceneManagerScript sm;
 
 	// Start is called before the first frame update
-	private void Start() {
+	private async void Start() {
+
+		//Shorthand the game controller
+		sm = FindFirstObjectByType<SceneManagerScript>();
 		
+		//Stare the game on the initialise state
+		SetState("screen-fading");
+
+		await sm.FadeScreenIn();
+
 		//Stare the game on the initialise state
 		SetState("initialise");
 	}
 
 	// Update is called once per frame
 	private void Update() {
-		
+
 		//If the state has changed
 		if (state != lastState) {
-			
+
 			//Update the last state to the current state
 			lastState = state;
-			
+
 			//Run the on change function for the current state
 			StateChanged();
 		}
@@ -201,4 +209,5 @@ public class GameController : MonoBehaviour {
 		uiTodaysVisitorCount.text = $"Visitors: {todaysVisitorCount}";
 
 	}
+
 }

@@ -309,7 +309,7 @@ public class SceepleSpawnerScript : MonoBehaviour {
 	}
 
 
-	void TryAndBuyRandomGiftItem(SceepleScript sceeple) {
+	private void TryAndBuyRandomGiftItem(SceepleScript sceeple) {
 		
 		//If we actually have gift items unlocked
 		if (gc.unlockedGiftShopItems.Count > 0) {
