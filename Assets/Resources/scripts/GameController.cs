@@ -15,6 +15,7 @@ public class GameController : MonoBehaviour {
 	public List<GiftShopItemScript> unlockedGiftShopItems;
 	[HideInInspector] public int todaysVisitorCount;
 
+	
 	[Header("State stuff")]
 	public string state;
 	private string lastState;
@@ -32,11 +33,15 @@ public class GameController : MonoBehaviour {
 
 
 	[Header("UI stuff")]
-	public GameObject uiBuildModeIndicator;
-	public GameObject uiPlayModeIndicator;
+	//public GameObject uiBuildModeIndicator;
+	//public GameObject uiPlayModeIndicator;
 	//public GameObject uiControls;
+	public GameObject uiPlayMode;
+	public GameObject uiBuildMode;
 	public TextMeshProUGUI uiFundsIndicator;
 	public TextMeshProUGUI uiTodaysVisitorCount;
+	public AudioSource sfxOnShot;
+	public AudioClip sfxInGameMenu;
 
 
 	[Header("Player stuff")]
@@ -50,11 +55,6 @@ public class GameController : MonoBehaviour {
 
 		//Shorthand the game controller
 		sm = FindFirstObjectByType<SceneManagerScript>();
-		
-		//Stare the game on the initialise state
-		SetState("screen-fading");
-
-		await sm.FadeScreenIn();
 
 		//Stare the game on the initialise state
 		SetState("initialise");
@@ -82,10 +82,26 @@ public class GameController : MonoBehaviour {
 		//Update all ui text to the current values, visible or not
 		UpdateUITextValues();
 
+		if (Input.GetKeyDown(KeyCode.M)) {
+			if (state != "paused") {
+				sm.ShowInGameMenu();
+				sfxOnShot.PlayOneShot(sfxInGameMenu);
+			}
+			else {
+				sm.ResumePlaying();
+			}
+
+		}
+
+
 	}
 
 	//These actions are run only when the state changes
 	private void StateChanged() {
+		
+		//Reset the mouse lock state on each state change, and let the state correct it if need be
+		mouseLockState = true;
+		
 		switch (state) {
 			case "initialise":
 
@@ -110,6 +126,10 @@ public class GameController : MonoBehaviour {
 				ShowPlayModeUI();
 
 				break;
+
+			case "paused":
+				mouseLockState = false;
+				break;
 		}
 	}
 
@@ -123,9 +143,20 @@ public class GameController : MonoBehaviour {
 				break;
 
 			case "build":
-				if (Input.GetKeyDown(KeyCode.P)) {
+				
+						
+				if (Input.GetKeyDown(KeyCode.B)) {
 					StartDay();
 				}
+						
+				if (Input.GetKeyDown(KeyCode.P)) {
+					sm.ShowPurchaseMenu();
+				}
+						
+				if (Input.GetKeyDown(KeyCode.U)) {
+					sm.ShowUpgradeMenu();
+				}
+				
 
 				break;
 
@@ -151,10 +182,10 @@ public class GameController : MonoBehaviour {
 	public void ResetUI() {
 
 		//Hide the build mode indicator
-		uiBuildModeIndicator.SetActive(false);
+		//uiBuildModeIndicator.SetActive(false);
 
 		//Hide the play mode indicator
-		uiPlayModeIndicator.SetActive(false);
+		//uiPlayModeIndicator.SetActive(false);
 
 		//Hide the controls indicator
 		//uiControls.SetActive(false);
@@ -167,11 +198,8 @@ public class GameController : MonoBehaviour {
 		//Reset the ui
 		ResetUI();
 
-		//Hide the build mode indicator
-		uiBuildModeIndicator.SetActive(true);
-
-		//Hide the controls indicator
-		//uiControls.SetActive(true);
+		//Show build mode stuff
+		uiBuildMode.SetActive(true);
 	}
 
 
@@ -181,8 +209,8 @@ public class GameController : MonoBehaviour {
 		//Reset the ui
 		ResetUI();
 
-		//Hide the play mode indicator
-		uiPlayModeIndicator.SetActive(false);
+		//Show build mode stuff
+		uiPlayMode.SetActive(true);
 	}
 
 
@@ -203,7 +231,7 @@ public class GameController : MonoBehaviour {
 	private void UpdateUITextValues() {
 
 		//Update the funds indicator
-		uiFundsIndicator.text = $"Funds: ${funds}";
+		uiFundsIndicator.text = $"${funds}";
 
 		//Update the funds indicator
 		uiTodaysVisitorCount.text = $"Visitors: {todaysVisitorCount}";

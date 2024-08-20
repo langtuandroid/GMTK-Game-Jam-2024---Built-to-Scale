@@ -66,8 +66,16 @@ public class FlyCamera : MonoBehaviour {
 		AddMovement(KeyCode.S, Vector3.back);
 		AddMovement(KeyCode.D, Vector3.right);
 		AddMovement(KeyCode.A, Vector3.left);
-		AddMovement(KeyCode.Space, Vector3.up);
-		AddMovement(KeyCode.LeftControl, Vector3.down);
+
+		AddMovement(KeyCode.UpArrow, Vector3.forward);
+		AddMovement(KeyCode.DownArrow, Vector3.back);
+		AddMovement(KeyCode.RightArrow, Vector3.right);
+		AddMovement(KeyCode.LeftArrow, Vector3.left);
+
+		AddMovement(KeyCode.E, Vector3.up);
+		AddMovement(KeyCode.Q, Vector3.down);
+
+
 		Vector3 direction = transform.TransformVector(moveInput.normalized);
 
 		if (Input.GetKey(KeyCode.LeftShift))
