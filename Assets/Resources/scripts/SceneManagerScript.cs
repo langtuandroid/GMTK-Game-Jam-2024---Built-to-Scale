@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,20 +11,43 @@ public class SceneManagerScript : MonoBehaviour {
 	public GameObject uiHowToPlay;
 	public GameObject uiOptions;
 	public GameObject uiHighScores;
+	public GameObject uiEndOfDayReport;
 	public GameObject uiPurchaseMenu;
 	public GameObject uiUpgradeMenu;
-	public string savedGameControllerState;
+	public TextMeshProUGUI uiEndOfDayReportVisitors;
+	public TextMeshProUGUI uiEndOfDayReportIncome;
+	public TextMeshProUGUI uiEndOfDayReportRating;
+	[HideInInspector] public string savedGameControllerState;
+
+	public float cameraSensitivity;
+	public float cameraSpeed;
+
+	public SliderScript cameraSpeedSlider;
+	public SliderScript cameraSensitivitySlider;
+
 
 	private GameController gc;
 
 	void Awake() {
 		DontDestroyOnLoad(transform.gameObject);
 		fader.color = Color.black;
+
+
+
+		//PlayerPrefs.Save();
 	}
 
 	public UnityEngine.UI.Image fader;
 
 	private async void Start() {
+
+		cameraSpeed = PlayerPrefs.GetFloat("cameraSpeed", 50f);
+		cameraSensitivity = PlayerPrefs.GetFloat("cameraSensitivity", 0.75f);
+
+
+		cameraSpeedSlider.slider.value = cameraSpeed;
+		cameraSensitivitySlider.slider.value = cameraSensitivity;
+
 
 		gc = getGameController();
 
@@ -38,6 +63,7 @@ public class SceneManagerScript : MonoBehaviour {
 
 	private void Update() {
 		gc = getGameController();
+
 	}
 
 	private GameController getGameController() {
@@ -49,15 +75,23 @@ public class SceneManagerScript : MonoBehaviour {
 		}
 	}
 
-	private async void ResetUI() {
+	private void ResetUI() {
+
+		cameraSpeed = cameraSpeedSlider.slider.value;
+		cameraSensitivity = cameraSensitivitySlider.slider.value;
 		uiInGameMenu.SetActive(false);
 		uiMainMenu.SetActive(false);
 		uiHowToPlay.SetActive(false);
 		uiOptions.SetActive(false);
 		uiHighScores.SetActive(false);
+		uiEndOfDayReport.SetActive(false);
+		uiPurchaseMenu.SetActive(false);
+		uiUpgradeMenu.SetActive(false);
 	}
 
 	public async UniTask FadeScreenIn() {
+
+		fader.raycastTarget = true;
 
 		//If the alpha is greater than 0 aka invisible
 		while (fader.color.a > 0) {
@@ -68,14 +102,16 @@ public class SceneManagerScript : MonoBehaviour {
 			//Yeild to other processes
 			await UniTask.Yield(PlayerLoopTiming.Update);
 		}
+		fader.raycastTarget = false;
 	}
 
 	public async UniTask FadeScreenOut() {
 
+		fader.raycastTarget = true;
+
 		//If the alpha is less than 1 aka full visible
 		while (fader.color.a < 1) {
 
-			Debug.Log(fader.color.a);
 			//Increase the alpha a bit
 			fader.color = new Color(fader.color.r, fader.color.g, fader.color.b, Mathf.Clamp(fader.color.a + (Time.deltaTime / fadeTime), 0, 1));
 
@@ -169,7 +205,7 @@ public class SceneManagerScript : MonoBehaviour {
 		uiPurchaseMenu.SetActive(true);
 	}
 
-	public async void ShowUpgradeMenu() {
+	public void ShowUpgradeMenu() {
 		//Hide all the menu items
 		ResetUI();
 
@@ -177,7 +213,7 @@ public class SceneManagerScript : MonoBehaviour {
 		uiUpgradeMenu.SetActive(true);
 	}
 
-	public async void PausePlaying() {
+	public void PausePlaying() {
 
 		//Hide all the menu items
 		ResetUI();
@@ -186,7 +222,7 @@ public class SceneManagerScript : MonoBehaviour {
 		uiInGameMenu.SetActive(true);
 
 		if (gc is not null) {
-			
+
 			//Save the last gameplay state
 			savedGameControllerState = gc.state;
 
@@ -196,23 +232,93 @@ public class SceneManagerScript : MonoBehaviour {
 
 	}
 
+	public void ResumePlaying() {
 
-	public async void ResumePlaying() {
+		//Save any options data here
+		SaveData();
 
 		//Hide all the menu items
 		ResetUI();
 
 		gc = getGameController();
 
+		//Was a game controller found? must be playing
 		if (gc is not null) {
 
 			//Restore the last gameplay state
 			gc.SetState(savedGameControllerState);
-			
+
 			//Clear the last gameplay state
 			savedGameControllerState = null;
 		}
 
+		//No gc? Must still be on the main menu
+		else {
+			ShowMainMenu();
+		}
+
 	}
 
+	public void SaveData() {
+
+		PlayerPrefs.SetFloat("cameraSpeed", cameraSpeed);
+		PlayerPrefs.SetFloat("cameraSensitivity", cameraSensitivity);
+
+		PlayerPrefs.Save();
+	}
+
+	public void SaveHighscore(int score) {
+		var scores = new List<int> {
+			PlayerPrefs.GetInt("Score - 1"),
+			PlayerPrefs.GetInt("Score - 2"),
+			PlayerPrefs.GetInt("Score - 3"),
+			PlayerPrefs.GetInt("Score - 4"),
+			PlayerPrefs.GetInt("Score - 5"),
+			score,
+		};
+
+
+		scores.Sort();
+
+		PlayerPrefs.SetInt("Score - 1", scores[^1]);
+		PlayerPrefs.SetInt("Score - 2", scores[^2]);
+		PlayerPrefs.SetInt("Score - 3", scores[^3]);
+		PlayerPrefs.SetInt("Score - 4", scores[^4]);
+		PlayerPrefs.SetInt("Score - 5", scores[^5]);
+		PlayerPrefs.Save();
+
+	}
+
+	public void ShowEndOfDayReport() {
+
+		//Hide all the menu items
+		ResetUI();
+
+		gc = getGameController();
+
+		//Was a game controller found? must be playing
+		if (gc is not null) {
+			uiEndOfDayReportVisitors.text = gc.dayVisitorCount.ToString();
+			uiEndOfDayReportIncome.text = gc.dayIncome.ToString();
+			uiEndOfDayReportRating.text = (gc.dayRatingRaw / gc.dayVisitorCount).ToString("F1");
+		}
+
+		//Show the options screen
+		uiEndOfDayReport.SetActive(true);
+	}
+	public void ShowEndOfDayReportNext() {
+
+		//Hide all the menu items
+		ResetUI();
+
+		gc = getGameController();
+
+		//Was a game controller found? must be playing
+		if (gc is not null) {
+
+			gc.day++;
+			gc.SetState("build");
+		}
+
+	}
 }

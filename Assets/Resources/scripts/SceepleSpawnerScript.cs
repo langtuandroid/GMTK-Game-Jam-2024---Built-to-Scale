@@ -89,6 +89,11 @@ public class SceepleSpawnerScript : MonoBehaviour {
 
 		//Add the sceeple to the list
 		sceeples.Add(sceeple);
+
+		//Chalk another visitor on the board
+		gc.todaysVisitorCount++;
+
+		gc.dayVisitorCount++;
 	}
 
 	//Tries to spawn a sceeple
@@ -105,7 +110,7 @@ public class SceepleSpawnerScript : MonoBehaviour {
 	public async UniTask SpawnAllSceeple() {
 
 		while (TrySpawnSceeple()) {
-			await UniTask.Delay(Random.Range(800, 2501));
+			await UniTask.Delay(Random.Range(1200, 4000));
 		}
 	}
 
@@ -123,6 +128,9 @@ public class SceepleSpawnerScript : MonoBehaviour {
 
 		//Add that yoinked cash to your own wallet
 		gc.funds += gc.ticketPrice;
+
+		//Add that yoinked cash to the day
+		gc.dayIncome += gc.ticketPrice;
 
 		//Set the stats back
 		sceeple.stats = stats;
@@ -164,8 +172,6 @@ public class SceepleSpawnerScript : MonoBehaviour {
 			//Set that they've passed the ticketbooth
 			sceeple.hasPassedTickedBooth = true;
 
-			//Chalk another visitor on the board
-			gc.todaysVisitorCount++;
 		}
 
 	}
@@ -176,8 +182,14 @@ public class SceepleSpawnerScript : MonoBehaviour {
 			Debug.Log($"{sceeple.stats.name} reached a checkpoint");
 
 			if (ShouldTurnBack(sceeple)) {
-				Debug.Log($"{sceeple.stats.name} new check failed and will now turn back");
+
+				sceeple.distanceClimbed = (float)sceeple.splineFollower.GetPercent() * 100;
+
+				sceeple.rating = CalculateRating(sceeple);
+
+				Debug.Log($"{sceeple.stats.name} new check failed @ {sceeple.distanceClimbed}% and will now turn back");
 				sceeple.TurnBack();
+
 			}
 			else {
 				Debug.Log($"{sceeple.stats.name} new check passed");
@@ -216,14 +228,15 @@ public class SceepleSpawnerScript : MonoBehaviour {
 
 			Debug.Log($"{sceeple.stats.name} made it to the summit");
 
-			//Remove the ticket price from their wallet... YOINK!
+			//Mark the sceeple as having reached the summit
 			sceeple.reachedSummit = true;
+
+			sceeple.distanceClimbed = 100;
+
+			sceeple.rating = CalculateRating(sceeple);
 
 			//Set the sceeple to wander
 			await sceeple.SetWander(true);
-			
-			sceeple.navAgent.SetDestination(summitLookoutPoints[Random.Range(0, summitLookoutPoints.Length)].position);
-			await sceeple.AwaitDestinationReached();
 
 			sceeple.navAgent.SetDestination(summitLookoutPoints[Random.Range(0, summitLookoutPoints.Length)].position);
 			await sceeple.AwaitDestinationReached();
@@ -233,15 +246,18 @@ public class SceepleSpawnerScript : MonoBehaviour {
 
 			sceeple.navAgent.SetDestination(summitLookoutPoints[Random.Range(0, summitLookoutPoints.Length)].position);
 			await sceeple.AwaitDestinationReached();
-			
+
+			sceeple.navAgent.SetDestination(summitLookoutPoints[Random.Range(0, summitLookoutPoints.Length)].position);
 			await sceeple.AwaitDestinationReached();
-			
-			
+
+			await sceeple.AwaitDestinationReached();
+
+
 			Debug.Log($"{sceeple.stats.name} is heading back down after a successful climb");
 
 			//Walk back to the spline
 			sceeple.navAgent.SetDestination(sceeple.splineFollower.spline.GetPoint(sceeple.splineFollower.spline.pointCount - 1).position);
-			
+
 			await sceeple.AwaitDestinationReached();
 
 			//Wait for a random time between 2 and 5 seconds 
@@ -249,7 +265,7 @@ public class SceepleSpawnerScript : MonoBehaviour {
 
 			//Set the sceeple to wander
 			await sceeple.SetWander(false);
-			
+
 			//Move the sceeple to the end of the spline
 			sceeple.splineFollower.SetPercent(100);
 
@@ -264,8 +280,8 @@ public class SceepleSpawnerScript : MonoBehaviour {
 
 		//Make them move faster
 		sceeple.navAgent.speed = 7;
-		
-			
+
+
 		//If the sceeple either reached the summit, or turned back
 		if (sceeple.reachedSummit || sceeple.turnedBack) {
 
@@ -284,8 +300,21 @@ public class SceepleSpawnerScript : MonoBehaviour {
 			//Wait for them to get there
 			await sceeple.AwaitDestinationReached();
 
+			var rating = CalculateRating(sceeple);
+			Debug.Log($"{sceeple.stats.name} gave rating: {rating} - Disp.:{sceeple.stats.disposition} - distance.:{sceeple.distanceClimbed}");
+			
+			gc.dayRatingRaw += rating;
+
+
 			//Remove them
 			Destroy(sceeple.gameObject);
+
+			//Chalk another visitor on the board
+			gc.todaysVisitorCount--;
+
+			if (gc.todaysVisitorCount <= 0) {
+				gc.EndDay();
+			}
 		}
 
 	}
@@ -310,7 +339,7 @@ public class SceepleSpawnerScript : MonoBehaviour {
 
 
 	private void TryAndBuyRandomGiftItem(SceepleScript sceeple) {
-		
+
 		//If we actually have gift items unlocked
 		if (gc.unlockedGiftShopItems.Count > 0) {
 
@@ -319,6 +348,9 @@ public class SceepleSpawnerScript : MonoBehaviour {
 
 			//Add that items price to the player's funds
 			gc.funds += item.price;
+
+			//Add that to the day's income
+			gc.dayIncome += item.price;
 
 			//Run any associated actions for this item
 			RunActionBasedOnItemType(sceeple, item);
@@ -333,27 +365,45 @@ public class SceepleSpawnerScript : MonoBehaviour {
 		//Get the disposition as a percentage
 		var dispositionPercentage = (sceeple.stats.disposition - gc.minSceepleDisposition) / (gc.maxSceepleDisposition - gc.minSceepleDisposition) * 100;
 
-		//Get the total: disposition percentage + 30 if they reached the top, or -30 if they didn't
-		var total = dispositionPercentage + (sceeple.reachedSummit ? 30 : -5);
 
-		Debug.Log($"{sceeple.stats.name} rating: {total}");
-		
-		//If they hit 75%
-		if (total > 50) {
+		Debug.Log($"{sceeple.stats.name} rating: {sceeple.rating}, has ${sceeple.stats.money}");
+
+		//If they hit 50%
+		if (sceeple.rating > 2.5) {
 
 			//Try and buy a item
 			TryAndBuyRandomGiftItem(sceeple);
 		}
 
 		//If they hit 100%
-		if (total > 100) {
+		if (sceeple.rating > 4) {
 
 			//Try and buy ANOTHER item
 			TryAndBuyRandomGiftItem(sceeple);
 		}
 	}
 
+// Function to calculate a rating from 1 to 5 stars
+	public float CalculateRating(SceepleScript sceeple) {
 
+		// Normalize disposition within the given range
+		var normalizedDisposition = Mathf.InverseLerp(gc.minSceepleDisposition, gc.maxSceepleDisposition, sceeple.stats.disposition);
+
+		// Weigh the contribution of disposition and distance to the final rating
+		var dispositionWeight = 0.7f; // 70% weight to disposition
+		var distanceWeight = 0.3f; // 30% weight to distance traveled
+
+		// Normalize the distance (percentage) traveled
+		var normalizedDistance = Mathf.InverseLerp(0, 100, sceeple.distanceClimbed);
+
+		// Combine both normalized values
+		var combinedScore = (normalizedDisposition * dispositionWeight) + (normalizedDistance * distanceWeight);
+
+		// Map combined score to star rating (1 to 5)
+		var starRating = Mathf.Clamp(combinedScore * 5, 1, 5);
+
+		return starRating;
+	}
 
 
 }

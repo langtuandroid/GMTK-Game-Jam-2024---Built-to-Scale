@@ -4,18 +4,28 @@ using UnityEngine;
 using Dreamteck.Splines;
 using TMPro;
 public class GameController : MonoBehaviour {
-
-
+	[Header("DEBUG")]
+	public bool debug;
+	
+	
+	
 	[Header("Park stuff")]
 	public SplineComputer pathUp;
 	public SplineComputer pathDown;
 	public Transform leaveMountainPoint;
-	public int ticketPrice = 12;
+	public int ticketPrice = 5;
+	public int totalDays = 10;
 	public int funds;
 	public List<GiftShopItemScript> unlockedGiftShopItems;
 	[HideInInspector] public int todaysVisitorCount;
+	public int day = 1;
 
-	
+
+	[HideInInspector] public int dayVisitorCount;
+	[HideInInspector] public int dayIncome;
+	[HideInInspector] public float dayRatingRaw;
+
+
 	[Header("State stuff")]
 	public string state;
 	private string lastState;
@@ -40,13 +50,14 @@ public class GameController : MonoBehaviour {
 	public GameObject uiBuildMode;
 	public TextMeshProUGUI uiFundsIndicator;
 	public TextMeshProUGUI uiTodaysVisitorCount;
+	public TextMeshProUGUI uiCurrentDayIndicator;
 	public AudioSource sfxOnShot;
 	public AudioClip sfxInGameMenu;
 
 
 	[Header("Player stuff")]
 	public Transform player;
-	public CinemachineVirtualCamera virtualCamera;
+	public FlyCamera camera;
 
 	private SceneManagerScript sm;
 
@@ -63,6 +74,11 @@ public class GameController : MonoBehaviour {
 	// Update is called once per frame
 	private void Update() {
 
+		//Set the camera settings
+		camera.acceleration = sm.cameraSpeed;
+		camera.lookSensitivity = sm.cameraSensitivity;
+
+	
 		//If the state has changed
 		if (state != lastState) {
 
@@ -98,10 +114,10 @@ public class GameController : MonoBehaviour {
 
 	//These actions are run only when the state changes
 	private void StateChanged() {
-		
+
 		//Reset the mouse lock state on each state change, and let the state correct it if need be
 		mouseLockState = true;
-		
+
 		switch (state) {
 			case "initialise":
 
@@ -114,7 +130,14 @@ public class GameController : MonoBehaviour {
 				break;
 
 			case "build":
-
+                
+				if (day == totalDays) {
+					uiCurrentDayIndicator.text = $"{day}/{totalDays}";
+				}
+				else {
+					uiCurrentDayIndicator.text = $"{day}/{totalDays}";
+				}
+				
 				//Show the build ui
 				ShowBuildModeUI();
 
@@ -143,20 +166,20 @@ public class GameController : MonoBehaviour {
 				break;
 
 			case "build":
-				
-						
+
+
 				if (Input.GetKeyDown(KeyCode.B)) {
 					StartDay();
 				}
-						
+
 				if (Input.GetKeyDown(KeyCode.P)) {
 					sm.ShowPurchaseMenu();
 				}
-						
+
 				if (Input.GetKeyDown(KeyCode.U)) {
 					sm.ShowUpgradeMenu();
 				}
-				
+
 
 				break;
 
@@ -173,10 +196,24 @@ public class GameController : MonoBehaviour {
 	}
 
 	private async void StartDay() {
+		dayVisitorCount = 0;
+		dayIncome = 0;
+		dayRatingRaw = 0;
+
+
+
 		SetState("play");
 
 		await sceepleSpawner.SpawnAllSceeple();
 	}
+
+	public void EndDay() {
+
+		SetState("paused");
+
+		sm.ShowEndOfDayReport();
+	}
+
 
 	//Sets the new state
 	public void ResetUI() {
@@ -234,7 +271,7 @@ public class GameController : MonoBehaviour {
 		uiFundsIndicator.text = $"${funds}";
 
 		//Update the funds indicator
-		uiTodaysVisitorCount.text = $"Visitors: {todaysVisitorCount}";
+		uiTodaysVisitorCount.text = $"{todaysVisitorCount}";
 
 	}
 

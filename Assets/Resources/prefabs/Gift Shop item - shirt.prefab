@@ -80,6 +80,36 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
         type: 3}
+      propertyPath: visibleName
+      value: Shirt
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: texture.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: 'texture.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2800000, guid: 8502fcc24669d654c8ab18f6df665fce, type: 3}
+    - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: 'texture.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2800000, guid: a5f1371d1565cc048ba3665bde086944, type: 3}
+    - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: 'texture.Array.data[2]'
+      value: 
+      objectReference: {fileID: 2800000, guid: 8167f6d575233e6429ce70735b736d6b, type: 3}
+    - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: 'texture.Array.data[3]'
+      value: 
+      objectReference: {fileID: 2800000, guid: 8167f6d575233e6429ce70735b736d6b, type: 3}
+    - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
       propertyPath: onSceeplePurchased.m_PersistentCalls.m_Calls.Array.size
       value: 0
       objectReference: {fileID: 0}

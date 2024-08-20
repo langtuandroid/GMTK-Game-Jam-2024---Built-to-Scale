@@ -80,6 +80,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
         type: 3}
+      propertyPath: visibleName
+      value: Gripper Plushie
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: texture.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: 'texture.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2800000, guid: c37433efa059fc8488ef12afa6f98109, type: 3}
+    - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: 'texture.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2800000, guid: a7bf039e95082d5478ec2569c7da71f9, type: 3}
+    - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
       propertyPath: onSceeplePurchased.m_PersistentCalls.m_Calls.Array.size
       value: 0
       objectReference: {fileID: 0}

@@ -39,6 +39,7 @@ public class FlyCamera : MonoBehaviour {
 	}
 
 	void UpdateInput() {
+		
 		// Position
 		velocity += GetAccelerationVector() * Time.deltaTime;
 
@@ -72,8 +73,8 @@ public class FlyCamera : MonoBehaviour {
 		AddMovement(KeyCode.RightArrow, Vector3.right);
 		AddMovement(KeyCode.LeftArrow, Vector3.left);
 
-		AddMovement(KeyCode.E, Vector3.up);
-		AddMovement(KeyCode.Q, Vector3.down);
+		AddMovement(KeyCode.Q, Vector3.up);
+		AddMovement(KeyCode.E, Vector3.down);
 
 
 		Vector3 direction = transform.TransformVector(moveInput.normalized);

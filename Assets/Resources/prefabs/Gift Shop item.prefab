@@ -44,10 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03ee34c339fc4bce9abfc9bd6acb4065, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: 
-  onSceeplePurchased:
-    m_PersistentCalls:
-      m_Calls: []
+  texture: {fileID: 0}
+  visibleName: 
+  type: 
   unlockPrice: 0
   price: 0
   sprite: {fileID: 0}

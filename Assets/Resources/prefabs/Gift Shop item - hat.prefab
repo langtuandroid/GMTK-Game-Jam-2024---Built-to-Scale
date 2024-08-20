@@ -80,6 +80,36 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
         type: 3}
+      propertyPath: visibleName
+      value: Hat
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: texture.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: 'texture.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2800000, guid: b2f5057f27e5d92478e30bf873c3e52b, type: 3}
+    - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: 'texture.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2800000, guid: 9c2a81b6662988e4380d563f812f0ff0, type: 3}
+    - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: 'texture.Array.data[2]'
+      value: 
+      objectReference: {fileID: 2800000, guid: 70d537395dcf4bd4c9b4fac79a6ab417, type: 3}
+    - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: 'texture.Array.data[3]'
+      value: 
+      objectReference: {fileID: 2800000, guid: 70d537395dcf4bd4c9b4fac79a6ab417, type: 3}
+    - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
       propertyPath: onSceeplePurchased.m_PersistentCalls.m_Calls.Array.size
       value: 0
       objectReference: {fileID: 0}
@@ -97,7 +127,7 @@ PrefabInstance:
     - target: {fileID: 8213929209132424508, guid: a40438089eaf8ed4f85bb219a5cf4a59,
         type: 3}
       propertyPath: m_Name
-      value: Gift Shop item Variant
+      value: Gift Shop item - hat
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

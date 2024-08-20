@@ -14,6 +14,7 @@ public class SceepleScript : MonoBehaviour {
 	private bool hasClimbed;
 	public bool turnedBack;
 	public float distanceClimbed;
+	public float rating;
 	public bool reachedSummit;
 	public bool showHelmet;
 	public bool showShirt;
@@ -23,6 +24,7 @@ public class SceepleScript : MonoBehaviour {
 	public Spline.Direction splineDirection = Spline.Direction.Forward;
 	public float angle;
 	private Vector3 lastPos;
+	
 
 	[Header("Models")]
 	public GameObject helmet;
@@ -82,7 +84,6 @@ public class SceepleScript : MonoBehaviour {
 
 	private async void Update() {
 
-
 		//Sync the helmet state 
 		helmet.SetActive(!showHat && showHelmet);
 
@@ -105,7 +106,11 @@ public class SceepleScript : MonoBehaviour {
 		targetSpeed = stats.skillLevel * angle;
 
 		if (splineDirection == Spline.Direction.Backward) {
-			targetSpeed = -targetSpeed;
+			targetSpeed = -6;
+		}
+
+		if (gc.debug) {
+			targetSpeed = targetSpeed * 10;
 		}
 
 		//Calculate the speed change variable
