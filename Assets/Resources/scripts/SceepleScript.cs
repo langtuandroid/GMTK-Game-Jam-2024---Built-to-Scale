@@ -16,15 +16,24 @@ public class SceepleScript : MonoBehaviour {
 	public float distanceClimbed;
 	public float rating;
 	public bool reachedSummit;
+	
+	
 	public bool showHelmet;
 	public bool showShirt;
 	public bool showHat;
 	public bool showPlushie;
+	
+	public MeshRenderer helmetMesh;
+	public MeshRenderer shirtMesh;
+	public MeshRenderer hatMesh;
+	public MeshRenderer plushieMesh;
+	
+	
 	public bool hasPassedTickedBooth;
 	public Spline.Direction splineDirection = Spline.Direction.Forward;
 	public float angle;
 	private Vector3 lastPos;
-	
+
 
 	[Header("Models")]
 	public GameObject helmet;
@@ -36,7 +45,6 @@ public class SceepleScript : MonoBehaviour {
 
 
 	async void Start() {
-
 
 		//Shorthand the game controller
 		gc = FindFirstObjectByType<GameController>();
@@ -114,21 +122,32 @@ public class SceepleScript : MonoBehaviour {
 
 		if (gc.debug) {
 			targetSpeed = targetSpeed * 20;
-			speedChange = speedChange * 5;
+			speedChange = speedChange * 15;
+			navAgent.acceleration = 8 * 3;
+			navAgent.speed = 3 * 3;
 		}
-
-		//If the target speed is greater than the speed
-		if (targetSpeed > splineFollower.followSpeed) {
-
-			//Set the spline speed
-			splineFollower.followSpeed = Mathf.Clamp(splineFollower.followSpeed + speedChange, splineFollower.followSpeed, targetSpeed);
+		else {
+			navAgent.acceleration = 8;
+			navAgent.speed = 3;
 		}
+		
+		speedChange = speedChange * 15;
 
-		//If the target speed is less than
-		else if (targetSpeed < splineFollower.followSpeed) {
+		if (splineFollower.enabled) {
 
-			//Set the spline speed
-			splineFollower.followSpeed = Mathf.Clamp(splineFollower.followSpeed - speedChange, targetSpeed, splineFollower.followSpeed);
+			//If the target speed is greater than the speed
+			if (targetSpeed > splineFollower.followSpeed) {
+
+				//Set the spline speed
+				splineFollower.followSpeed = Mathf.Clamp(splineFollower.followSpeed + speedChange, splineFollower.followSpeed, targetSpeed);
+			}
+
+			//If the target speed is less than
+			else if (targetSpeed < splineFollower.followSpeed) {
+
+				//Set the spline speed
+				splineFollower.followSpeed = Mathf.Clamp(splineFollower.followSpeed - speedChange, targetSpeed, splineFollower.followSpeed);
+			}
 		}
 
 

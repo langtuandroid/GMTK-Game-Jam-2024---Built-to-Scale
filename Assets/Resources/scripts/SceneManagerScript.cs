@@ -14,6 +14,8 @@ public class SceneManagerScript : MonoBehaviour {
 	public GameObject uiEndOfDayReport;
 	public GameObject uiPurchaseMenu;
 	public GameObject uiUpgradeMenu;
+	public GameObject uiEndOfDayReportFinish;
+	public GameObject uiEndOfDayReportNext;
 	public TextMeshProUGUI uiEndOfDayReportVisitors;
 	public TextMeshProUGUI uiEndOfDayReportIncome;
 	public TextMeshProUGUI uiEndOfDayReportRating;
@@ -24,17 +26,24 @@ public class SceneManagerScript : MonoBehaviour {
 
 	public SliderScript cameraSpeedSlider;
 	public SliderScript cameraSensitivitySlider;
+	private static GameObject instance;
+
 
 
 	private GameController gc;
 
 	void Awake() {
 		DontDestroyOnLoad(transform.gameObject);
-		fader.color = Color.black;
 
+		if (instance == null) {
+			instance = gameObject;
+			fader.color = Color.black;
+		}
+		else {
+			Debug.Log(123123123123123123);
+			DestroyImmediate(gameObject);
+		}
 
-
-		//PlayerPrefs.Save();
 	}
 
 	public UnityEngine.UI.Image fader;
@@ -305,7 +314,17 @@ public class SceneManagerScript : MonoBehaviour {
 
 		//Show the options screen
 		uiEndOfDayReport.SetActive(true);
+
+		uiEndOfDayReportFinish.SetActive(false);
+		uiEndOfDayReportNext.SetActive(false);
+		if (gc.day == gc.totalDays) {
+			uiEndOfDayReportFinish.SetActive(true);
+		}
+		else {
+			uiEndOfDayReportNext.SetActive(true);
+		}
 	}
+
 	public void ShowEndOfDayReportNext() {
 
 		//Hide all the menu items
@@ -315,10 +334,14 @@ public class SceneManagerScript : MonoBehaviour {
 
 		//Was a game controller found? must be playing
 		if (gc is not null) {
-
 			gc.day++;
 			gc.SetState("build");
 		}
 
+	}
+
+	public async void FinishGame() {
+		ChangeScene("menu");
+		ShowMainMenu();
 	}
 }

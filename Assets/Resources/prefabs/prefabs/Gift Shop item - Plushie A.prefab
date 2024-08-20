@@ -1,0 +1,131 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &2766032097571160572
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 520616351737971300, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 264.20706
+      objectReference: {fileID: 0}
+    - target: {fileID: 520616351737971300, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 44.568626
+      objectReference: {fileID: 0}
+    - target: {fileID: 520616351737971300, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -185.84767
+      objectReference: {fileID: 0}
+    - target: {fileID: 520616351737971300, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 520616351737971300, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 520616351737971300, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 520616351737971300, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 520616351737971300, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 520616351737971300, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 520616351737971300, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: name
+      value: Plushie
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: type
+      value: plushie
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: price
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: texture
+      value: 
+      objectReference: {fileID: 2800000, guid: c37433efa059fc8488ef12afa6f98109, type: 3}
+    - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: unlockPrice
+      value: 150
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: visibleName
+      value: Gripper Plushie
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: texture.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: 'texture.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2800000, guid: c37433efa059fc8488ef12afa6f98109, type: 3}
+    - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: 'texture.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2800000, guid: a7bf039e95082d5478ec2569c7da71f9, type: 3}
+    - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: onSceeplePurchased.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: onSceeplePurchased.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 11500000, guid: 59d8e2c6b97898d4c87bab22a5461f8b,
+        type: 3}
+    - target: {fileID: 6454611210567022145, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: onSceeplePurchased.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8213929209132424508, guid: a40438089eaf8ed4f85bb219a5cf4a59,
+        type: 3}
+      propertyPath: m_Name
+      value: Gift Shop item - Plushie A
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a40438089eaf8ed4f85bb219a5cf4a59, type: 3}

@@ -4,7 +4,7 @@ using UnityEngine.Events;
 public class GiftShopItemScript : MonoBehaviour {
 
 	//The name that's printed for the player
-	public Texture[] texture;
+	public Texture texture;
 	
 	//The name that's printed for the player
 	public string visibleName;

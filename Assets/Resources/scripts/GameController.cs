@@ -14,12 +14,12 @@ public class GameController : MonoBehaviour {
 	public SplineComputer pathUp;
 	public SplineComputer pathDown;
 	public Transform leaveMountainPoint;
-	public int ticketPrice = 5;
-	public int totalDays = 10;
+	public int ticketPrice;
+	public int totalDays;
 	public int funds;
 	public List<GiftShopItemScript> unlockedGiftShopItems;
 	[HideInInspector] public int todaysVisitorCount;
-	public int day = 1;
+	public int day;
 
 
 	[HideInInspector] public int dayVisitorCount;
@@ -73,7 +73,7 @@ public class GameController : MonoBehaviour {
 
 	// Update is called once per frame
 	private void Update() {
-			debug = Input.GetKey(KeyCode.F);
+		debug = Input.GetKey(KeyCode.F);
 
 		//Set the camera settings
 		camera.acceleration = sm.cameraSpeed;
@@ -136,7 +136,7 @@ public class GameController : MonoBehaviour {
 					uiCurrentDayIndicator.text = $"{day}/{totalDays}";
 				}
 				else {
-					uiCurrentDayIndicator.text = $"{day}/{totalDays}";
+					uiCurrentDayIndicator.text = $"Final";
 				}
 
 				//Show the build ui

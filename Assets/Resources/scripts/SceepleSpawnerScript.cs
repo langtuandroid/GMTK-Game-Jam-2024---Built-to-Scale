@@ -148,17 +148,20 @@ public class SceepleSpawnerScript : MonoBehaviour {
 		sceeple.showHelmet = false;
 	}
 
-	public void AddHat(SceepleScript sceeple) {
+	public void AddHat(SceepleScript sceeple, GiftShopItemScript item) {
+		sceeple.hatMesh.material.SetTexture("_BaseMap", item.texture);
 		sceeple.showHat = true;
 	}
 
-	public void AddShirt(SceepleScript sceeple) {
+	public void AddShirt(SceepleScript sceeple, GiftShopItemScript item) {
+		sceeple.shirtMesh.material.SetTexture("_BaseMap", item.texture);
 
 		//Set the shirt to be shown
 		sceeple.showShirt = true;
 	}
 
-	public void AddPlushie(SceepleScript sceeple) {
+	public void AddPlushie(SceepleScript sceeple, GiftShopItemScript item) {
+		sceeple.plushieMesh.material.SetTexture("_BaseMap", item.texture);
 
 		//Set the shirt to be shown
 		sceeple.showPlushie = true;
@@ -256,8 +259,6 @@ public class SceepleSpawnerScript : MonoBehaviour {
 			sceeple.navAgent.SetDestination(summitLookoutPoints[Random.Range(0, summitLookoutPoints.Length)].position);
 			await sceeple.AwaitDestinationReached();
 
-			await sceeple.AwaitDestinationReached();
-
 
 			Debug.Log($"{sceeple.stats.name} is heading back down after a successful climb");
 
@@ -329,15 +330,15 @@ public class SceepleSpawnerScript : MonoBehaviour {
 
 		switch (item.type) {
 			case "hat":
-				AddHat(sceeple);
+				AddHat(sceeple, item);
 				break;
 
 			case "shirt":
-				AddShirt(sceeple);
+				AddShirt(sceeple, item);
 				break;
 
 			case "plushie":
-				AddPlushie(sceeple);
+				AddPlushie(sceeple, item);
 				break;
 
 		}
