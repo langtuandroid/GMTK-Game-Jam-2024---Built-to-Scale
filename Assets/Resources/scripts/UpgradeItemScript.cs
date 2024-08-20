@@ -42,7 +42,7 @@ public class UpgradeItemScript : MonoBehaviour {
 			}
 			else {
 				toolbarImageHolder.color = new Color(255, 255, 255, 1f);
-				priceText.color = new Color(0, 0, 0, 0.5f);
+				priceText.color = new Color(0, 0, 0, 1f);
 			}
 		}
 		

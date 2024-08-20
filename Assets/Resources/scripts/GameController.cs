@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using Cinemachine;
 using UnityEngine;
 using Dreamteck.Splines;
 using TMPro;
@@ -16,6 +14,7 @@ public class GameController : MonoBehaviour {
 	public Transform leaveMountainPoint;
 	public int ticketPrice;
 	public int totalDays;
+	public int totalIncome;
 	public int funds;
 	public List<GiftShopItemScript> unlockedGiftShopItems;
 	[HideInInspector] public int todaysVisitorCount;
@@ -71,6 +70,10 @@ public class GameController : MonoBehaviour {
 
 		sm.uiUpgradeMenu = uiUpgradeMenu;
 		sm.uiPurchaseMenu = uiPurchaseMenu;
+
+		totalIncome = 0;
+		funds = 10;
+		unlockedGiftShopItems.Clear();
 
 		sm.ResetUI();
 
@@ -143,10 +146,10 @@ public class GameController : MonoBehaviour {
 			case "build":
 
 				if (day == totalDays) {
-					uiCurrentDayIndicator.text = $"{day}/{totalDays}";
+					uiCurrentDayIndicator.text = $"Final";
 				}
 				else {
-					uiCurrentDayIndicator.text = $"Final";
+					uiCurrentDayIndicator.text = $"{day}/{totalDays}";
 				}
 
 				//Show the build ui
@@ -188,15 +191,22 @@ public class GameController : MonoBehaviour {
 				}
 
 				if (Input.GetKeyDown(KeyCode.U)) {
-					//if () {
 					sm.ShowUpgradeMenu();
-					//}
 				}
-
 
 				break;
 
 			case "play":
+				
+
+				if (Input.GetKeyDown(KeyCode.Y)) {
+					foreach (var sceeple in sceepleSpawner.sceeples) {
+						Destroy(sceeple.gameObject);
+					}
+					
+					EndDay();
+				}
+
 				break;
 
 		}
@@ -209,6 +219,9 @@ public class GameController : MonoBehaviour {
 	}
 
 	private async void StartDay() {
+		sceepleSpawner.sceeples.Clear();
+		maxSceeples = Random.Range(3, 10);
+		todaysVisitorCount = 0;
 		dayVisitorCount = 0;
 		dayIncome = 0;
 		dayRatingRaw = 0;
@@ -299,6 +312,16 @@ public class GameController : MonoBehaviour {
 				funds -= upgrade.price;
 				upgrade.purchased = true;
 				Destroy(upgrade.eventTrigger.gameObject);
+			}
+		}
+	}
+
+	public void TryBuyGiftShopItem(GiftStoreItemBuyScript upgrade) {
+		if (upgrade) {
+			if (upgrade.price <= funds) {
+				funds -= upgrade.price;
+				unlockedGiftShopItems.Add(upgrade.giftShopItem);
+				upgrade.eventTrigger.gameObject.SetActive(false);
 			}
 		}
 	}

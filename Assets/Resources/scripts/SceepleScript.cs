@@ -40,6 +40,7 @@ public class SceepleScript : MonoBehaviour {
 	public GameObject hat;
 	public GameObject shirt;
 	public GameObject plushie;
+	public GameObject flag;
 
 	private GameController gc;
 
@@ -103,6 +104,9 @@ public class SceepleScript : MonoBehaviour {
 
 		//Sync the shirt state 
 		plushie.SetActive(showPlushie);
+		
+		//Sync the flag state 
+		flag.SetActive(reachedSummit);
 
 		//Try to force the spline direction
 		splineFollower.direction = splineDirection;
@@ -123,8 +127,8 @@ public class SceepleScript : MonoBehaviour {
 		if (gc.debug) {
 			targetSpeed = targetSpeed * 20;
 			speedChange = speedChange * 15;
-			navAgent.acceleration = 8 * 3;
-			navAgent.speed = 3 * 3;
+			navAgent.acceleration = 8 * 10;
+			navAgent.speed = 3 * 8;
 		}
 		else {
 			navAgent.acceleration = 8;

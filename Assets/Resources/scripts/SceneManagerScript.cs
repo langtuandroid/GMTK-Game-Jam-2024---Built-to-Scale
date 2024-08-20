@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using TMPro;
@@ -76,12 +77,7 @@ public class SceneManagerScript : MonoBehaviour {
 	}
 
 	private GameController getGameController() {
-		if (gc is not null) {
-			return gc;
-		}
-		else {
-			return FindFirstObjectByType<GameController>();
-		}
+		return FindFirstObjectByType<GameController>();
 	}
 
 	public void ResetUI() {
@@ -94,13 +90,26 @@ public class SceneManagerScript : MonoBehaviour {
 		uiOptions.SetActive(false);
 		uiHighScores.SetActive(false);
 		uiEndOfDayReport.SetActive(false);
-		if (uiPurchaseMenu is not null) {
-			uiPurchaseMenu.SetActive(false);
+
+
+		try {
+			if (uiPurchaseMenu is not null) {
+				uiPurchaseMenu.SetActive(false);
+			}
 		}
-		
-		if (uiUpgradeMenu is not null && uiUpgradeMenu.activeInHierarchy) {
-			uiUpgradeMenu.SetActive(false);
+		catch (Exception e) {
+			//print("error");
 		}
+		try {
+			if (uiUpgradeMenu is not null && uiUpgradeMenu.activeInHierarchy) {
+				uiUpgradeMenu.SetActive(false);
+			}
+		}
+		catch (Exception e) {
+			//print("error");
+		}
+
+
 	}
 
 	public async UniTask FadeScreenIn() {
@@ -134,11 +143,16 @@ public class SceneManagerScript : MonoBehaviour {
 		}
 
 	}
+	public async void ChangeSceneVoid(string scene) {
+		await ChangeScene(scene, false);
+	}
 
-	public async void ChangeScene(string scene) {
+	public async UniTask ChangeScene(string scene, bool skipFade) {
 
 		//Fade the screen out
-		await FadeScreenOut();
+		if (!skipFade) {
+			await FadeScreenOut();
+		}
 
 		//Wait a beat
 		await UniTask.Delay(100);
@@ -153,7 +167,9 @@ public class SceneManagerScript : MonoBehaviour {
 		await UniTask.Delay(300);
 
 		//Fade the scene back in
-		await FadeScreenIn();
+		if (!skipFade) {
+			await FadeScreenIn();
+		}
 	}
 
 	public async void SaveGame() {
@@ -217,7 +233,7 @@ public class SceneManagerScript : MonoBehaviour {
 
 		//Show the options screen
 		uiPurchaseMenu.SetActive(true);
-        
+
 		if (gc is not null) {
 
 			//Save the last gameplay state
@@ -234,7 +250,7 @@ public class SceneManagerScript : MonoBehaviour {
 
 		//Show the options screen
 		uiUpgradeMenu.SetActive(true);
-        
+
 		if (gc is not null) {
 
 			//Save the last gameplay state
@@ -364,7 +380,11 @@ public class SceneManagerScript : MonoBehaviour {
 	}
 
 	public async void FinishGame() {
-		ChangeScene("menu");
-		ShowMainMenu();
+
+		savedGameControllerState = null;
+		SaveHighscore(gc.totalIncome);
+		await FadeScreenOut();
+		transform.SetParent(gc.transform);
+		ChangeScene("menu", true);
 	}
 }

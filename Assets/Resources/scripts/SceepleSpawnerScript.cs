@@ -131,6 +131,9 @@ public class SceepleSpawnerScript : MonoBehaviour {
 
 		//Add that yoinked cash to the day
 		gc.dayIncome += gc.ticketPrice;
+		
+		//Add that yoinked cash to the day
+		gc.totalIncome += gc.ticketPrice;
 
 		//Set the stats back
 		sceeple.stats = stats;
@@ -240,6 +243,11 @@ public class SceepleSpawnerScript : MonoBehaviour {
 			//Mark the sceeple as having reached the summit
 			sceeple.reachedSummit = true;
 
+			gc.funds += 25;
+			gc.totalIncome += 25;
+			gc.dayIncome += 25;
+				
+
 			sceeple.distanceClimbed = 100;
 
 			sceeple.rating = CalculateRating(sceeple);
@@ -249,12 +257,15 @@ public class SceepleSpawnerScript : MonoBehaviour {
 
 			sceeple.navAgent.SetDestination(summitLookoutPoints[Random.Range(0, summitLookoutPoints.Length)].position);
 			await sceeple.AwaitDestinationReached();
+			await UniTask.Delay(1000);
 
 			sceeple.navAgent.SetDestination(summitLookoutPoints[Random.Range(0, summitLookoutPoints.Length)].position);
 			await sceeple.AwaitDestinationReached();
+			await UniTask.Delay(1000);
 
 			sceeple.navAgent.SetDestination(summitLookoutPoints[Random.Range(0, summitLookoutPoints.Length)].position);
 			await sceeple.AwaitDestinationReached();
+			await UniTask.Delay(1000);
 
 			sceeple.navAgent.SetDestination(summitLookoutPoints[Random.Range(0, summitLookoutPoints.Length)].position);
 			await sceeple.AwaitDestinationReached();
@@ -264,11 +275,8 @@ public class SceepleSpawnerScript : MonoBehaviour {
 
 			//Walk back to the spline
 			sceeple.navAgent.SetDestination(sceeple.splineFollower.spline.GetPoint(sceeple.splineFollower.spline.pointCount - 1).position);
-
 			await sceeple.AwaitDestinationReached();
-
-			//Wait for a random time between 2 and 5 seconds 
-			await UniTask.Delay(1500);
+			
 
 			//Set the sceeple to wander
 			await sceeple.SetWander(false);
@@ -358,6 +366,9 @@ public class SceepleSpawnerScript : MonoBehaviour {
 
 			//Add that to the day's income
 			gc.dayIncome += item.price;
+
+			//Add that to the day's income
+			gc.totalIncome += item.price;
 
 			//Run any associated actions for this item
 			RunActionBasedOnItemType(sceeple, item);
